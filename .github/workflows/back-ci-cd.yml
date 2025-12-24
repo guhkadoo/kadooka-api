@@ -1,0 +1,83 @@
+name: Back CI/CD
+
+on:
+  push:
+    branches:
+      - PROD
+  workflow_dispatch:
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Run Django checks
+        run: |
+          python manage.py check
+      
+      - name: Check for migrations
+        run: |
+          python manage.py makemigrations --check --dry-run
+
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy via rsync
+        run: |
+          rsync -avz --delete \
+            --exclude='venv/' \
+            --exclude='db.sqlite3' \
+            --exclude='.git/' \
+            --exclude='__pycache__/' \
+            --exclude='.python-version' \
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/srv/apps/kadooka-api/
+
+      - name: Post-deployment Commands via SSH
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            set -o pipefail
+            
+            export PYENV_ROOT="$HOME/.pyenv"
+            export PATH="$PYENV_ROOT/bin:$PATH"
+            eval "$(pyenv init -)"
+
+            pyenv activate kadooka-api
+            cd /srv/apps/kadooka-api/            
+            pip install -r requirements.txt
+            python manage.py migrate --no-input
+            
+            sudo /usr/bin/systemctl restart kadooka-api.service
+          EOF
+
+      - name: Verify service is running
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            sleep 2
+            sudo systemctl is-active kadooka-api.service || exit 1
+          EOF
