@@ -1,0 +1,48 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+
+# Ambiente Virtual
+venv/
+env/
+ENV/
+venv.bak/
+env.bak/
+
+# Arquivos de banco de dados
+*.sqlite3
+
+# Arquivos do Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+/static/
+media/
+
+# Arquivos de compilação
+*.mo
+*.swp
+.DS_Store
+
+# Testes e coberturas
+*.cover
+.coverage
+nosetests.xml
+coverage.xml
+*.hypothesis/
+
+# Arquivos de configuração do Django (exemplo: segredo de configuração)
+*.env
+*.ini
+
+# Arquivo do pyenv
+.python-version
