@@ -24,16 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p71ww6gfovw=iwk9ko5nd_-1*!^^lm9&4%bi@9y*g!mqm*@772'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-   'api.kadooka.io'
+    'localhost',
+    '127.0.0.1',
+    'api.kadooka.io',
 ]
-
-# ALLOWED_HOSTS = [
-#     'localhost',
-#     '127.0.0.1',
-# ]
 
 # Application definition
 
@@ -43,17 +40,30 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'corsheaders',
     'translations',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4300',
+    'http://127.0.0.1:4300',
+    'https://app.kadooka.io',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://app.kadooka.io',
+    'https://api.kadooka.io',
 ]
 
 ROOT_URLCONF = 'kadooka_api.urls'
