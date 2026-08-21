@@ -19,6 +19,6 @@ from . import views
 
 urlpatterns = [
     # path('', views.api_root, name='api-root'),
-    path('translations/', include('translations.urls'))
+    path('i18n/', include('translations.urls'))
     
 ]
