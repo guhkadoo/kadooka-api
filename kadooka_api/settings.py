@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'translations',
 ]
 
 MIDDLEWARE = [
@@ -95,6 +96,8 @@ else:
             'PASSWORD': '123',
             'HOST': '127.0.0.1',
             'PORT': '3306',
+            # 'HOST': '192.168.56.1',
+            # 'PORT': '9876',
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
             }
