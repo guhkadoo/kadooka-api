@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
+
+      - name: Install System Dependencies for MySQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-libmysqlclient-dev pkg-config build-essential
       
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -54,7 +59,6 @@ jobs:
             --exclude='db.sqlite3' \
             --exclude='.git/' \
             --exclude='__pycache__/' \
-            --exclude='.python-version' \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/srv/apps/kadooka-api/
 
       - name: Post-deployment Commands via SSH

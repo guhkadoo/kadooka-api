@@ -9,6 +9,7 @@ __pycache__/
 dist/
 build/
 eggs/
+.venv/
 
 # Ambiente Virtual
 venv/
@@ -43,6 +44,3 @@ coverage.xml
 # Arquivos de configuração do Django (exemplo: segredo de configuração)
 *.env
 *.ini
-
-# Arquivo do pyenv
-.python-version
